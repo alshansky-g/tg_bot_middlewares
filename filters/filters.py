@@ -1,5 +1,4 @@
 import logging
-from unittest.mock import Base
 
 from aiogram.filters import BaseFilter
 from aiogram.types import TelegramObject
