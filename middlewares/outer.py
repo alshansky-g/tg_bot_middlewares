@@ -1,6 +1,5 @@
 import logging
 from typing import Any, Awaitable, Callable
-
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
@@ -20,7 +19,6 @@ class FirstOuterMiddleware(BaseMiddleware):
             __class__.__name__,
             event.__class__.__name__
         )
-
         result = await handler(event, data)
 
         logger.debug('Выходим из миддлвари  %s', __class__.__name__)

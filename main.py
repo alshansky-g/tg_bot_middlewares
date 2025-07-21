@@ -15,11 +15,18 @@ from middlewares.outer import (
     SecondOuterMiddleware,
     ThirdOuterMiddleware,
 )
+from middlewares.i18n import LanguageMiddleware
+from lexicon.lexicon_en import LEXICON_EN
+from lexicon.lexicon_ru import LEXICON_RU
 
 # Инициализируем логгер модуля
 logger = logging.getLogger(__name__)
 
-
+translations = {
+    'default': 'ru',
+    'ru': LEXICON_RU,
+    'en': LEXICON_EN
+}
 # Функция конфигурирования и запуска бота
 async def main() -> None:
 
@@ -39,15 +46,16 @@ async def main() -> None:
     dp.include_router(user_router)
     dp.include_router(other_router)
 
+    dp.update.middleware(LanguageMiddleware())
     dp.update.outer_middleware(FirstOuterMiddleware())
     user_router.callback_query.outer_middleware(SecondOuterMiddleware())
     other_router.message.outer_middleware(ThirdOuterMiddleware())
     user_router.message.middleware(FirstInnerMiddleware())
-    user_router.callback_query.middleware(SecondInnerMiddleware())
+    user_router.message.middleware(SecondInnerMiddleware())
     other_router.message.middleware(ThirdInnerMiddleware())
 
     # Запускаем polling
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, translations=translations)
 
 
 asyncio.run(main())
